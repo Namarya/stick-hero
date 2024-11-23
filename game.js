@@ -61,6 +61,21 @@ class Stick {
   }
 }
 
+class Platform {
+  constructor(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+    this.speed = 3;
+  }
+
+  draw() {
+    ctx.fillStyle = "#1e1e1e";
+    ctx.fillRect(this.x, this.y, this.width, this.height);
+  }
+}
+
 canvas.addEventListener("mousedown", (e) => {
   isMouseDown = true;
 });
@@ -75,6 +90,8 @@ const stick = new Stick(
   5,
   0
 );
+const p1 = new Platform(player.x, player.y + player.height, 60, canvas.height - 350);
+const p2 = new Platform(200, 350 + player.height, 60, canvas.height - 350);
 
 function resetStick() {
   stick.x = player.x + player.width;
@@ -88,6 +105,8 @@ function gameLoop() {
   player.draw();
   player.move();
   stick.draw();
+  p1.draw();
+  p2.draw();
 
   if (isMouseDown) {
     stick.grow();
@@ -100,7 +119,7 @@ function gameLoop() {
     }
   }
 
-  if (player.x >= stick.height * -1 + stick.x - 10) {
+  if (player.x >= stick.height * -1 + stick.x - 15) {
     canMove = false;
     resetStick();
   }
