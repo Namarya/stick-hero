@@ -1,11 +1,15 @@
 <svg width="42" height="45" viewBox="0 0 42 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g clip-path="url(#clip0_19_12)">
-<rect x="10.4717" y="0.56604" width="30" height="38.4906" rx="6.22641" fill="white"/>
-<circle cx="34.2452" cy="15" r="3.67925" fill="black"/>
-<rect x="9.62256" y="6.50946" width="31.6981" height="7.64151" rx="0.566038" fill="#FF0000"/>
-<path d="M7.88591 15.1141C7.75056 15.4193 7.3818 15.5416 7.09084 15.3779L0.517413 11.6781C0.0891886 11.4371 0.150401 10.8023 0.616791 10.6476L10.2482 7.45191C10.7146 7.29716 11.1431 7.76942 10.9439 8.21862L7.88591 15.1141Z" fill="#FF0000"/>
-<ellipse cx="32.8303" cy="39.3396" rx="3.39623" ry="5.09434" fill="white"/>
-<ellipse cx="18.1133" cy="39.3396" rx="3.39623" ry="5.09434" fill="white"/>
+<g id="hero" clip-path="url(#clip0_19_12)">
+<rect id="body" x="10.4717" y="0.56604" width="30" height="38.4906" rx="6.22641" fill="white"/>
+<circle id="eye" cx="34.2452" cy="15" r="3.67925" fill="black"/>
+<g id="bandana">
+<rect id="bandana-head" x="9.62256" y="6.50946" width="31.6981" height="7.64151" rx="0.566038" fill="#FF0000"/>
+<path id="bandana-tail" d="M7.88591 15.1141C7.75056 15.4193 7.3818 15.5416 7.09084 15.3779L0.517413 11.6781C0.0891886 11.4371 0.150401 10.8023 0.616791 10.6476L10.2482 7.45191C10.7146 7.29716 11.1431 7.76942 10.9439 8.21862L7.88591 15.1141Z" fill="#FF0000"/>
+</g>
+<g id="legs">
+<ellipse id="front-leg" cx="32.8303" cy="39.3396" rx="3.39623" ry="5.09434" fill="white"/>
+<ellipse id="back-leg" cx="18.1133" cy="39.3396" rx="3.39623" ry="5.09434" fill="white"/>
+</g>
 </g>
 <defs>
 <clipPath id="clip0_19_12">

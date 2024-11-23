@@ -6,6 +6,7 @@ heroImg.src = "./hero.svg";
 
 let isMouseDown = false;
 let canMove = false;
+let canMoveBackward = false;
 
 class Hero {
   constructor(x, y) {
@@ -23,6 +24,8 @@ class Hero {
   move() {
     if (canMove) {
       this.x += this.speed;
+    } else if (canMoveBackward && this.x > 10) {
+      this.x -= this.speed;
     }
   }
 }
@@ -74,6 +77,9 @@ class Platform {
     ctx.fillStyle = "#1e1e1e";
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
+  move() {
+    this.x -= this.speed;
+  }
 }
 
 canvas.addEventListener("mousedown", (e) => {
@@ -90,24 +96,52 @@ const stick = new Stick(
   5,
   0
 );
-const p1 = new Platform(player.x, player.y + player.height, 60, canvas.height - 350);
+
+const p1 = new Platform(
+  player.x,
+  player.y + player.height,
+  60,
+  canvas.height - 350
+);
 const p2 = new Platform(200, 350 + player.height, 60, canvas.height - 350);
 
-function resetStick() {
-  stick.x = player.x + player.width;
+const platforms = [p1, p2];
+
+function createPlatforms() {
+  const lastPlatform = platforms[platforms.length - 1];
+  const newX = lastPlatform.x + lastPlatform.width + Math.random() * 100 + 50;
+  const newWidth = Math.random() * 50 + 40;
+  platforms.push(
+    new Platform(newX, 350 + player.height, newWidth, canvas.height - 350)
+  );
+}
+
+function resetStick(stick, player) {
+  stick.x = 10 + player.width;
   stick.y = player.y + player.height;
   stick.width = 5;
   stick.height = 0;
   stick.angle = 0;
+  if(player.x === 10){
+    canMoveBackward = false;
+  }
 }
+
+function movePlatforms() {
+  if (canMoveBackward) {
+    platforms.forEach((platform) => platform.move());
+  }
+}
+
 function gameLoop() {
+    console.log("player.x: "+player.x)
+    console.log("stick.x: "+stick.x)
+    console.log("stick.height: "+stick.height)
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   player.draw();
   player.move();
   stick.draw();
-  p1.draw();
-  p2.draw();
-
+  movePlatforms();
   if (isMouseDown) {
     stick.grow();
   }
@@ -118,15 +152,28 @@ function gameLoop() {
       canMove = true;
     }
   }
+  platforms.forEach((platform) => platform.draw());
+  const lastPlatform = platforms[platforms.length - 1];
+  if (player.x + canvas.width / 2 > lastPlatform.x) {
+    createPlatforms();
+  }
+  if (platforms[0].x + platforms[0].width < 0) {
+    platforms.shift();
+  }
 
   if (player.x >= stick.height * -1 + stick.x - 15) {
     canMove = false;
-    resetStick();
-  }
-
+    canMoveBackward = true;
+    resetStick(stick, player);
+    
+  } 
+   if(player.x === 10 ){
+    canMoveBackward = false;
+   }
+   
   requestAnimationFrame(gameLoop);
 }
-
+ 
 heroImg.onload = () => {
   gameLoop();
 };
