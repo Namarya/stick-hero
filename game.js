@@ -7,6 +7,10 @@ heroImg.src = "./hero.svg";
 let isMouseDown = false;
 let canMove = false;
 let canMoveBackward = false;
+let fail = false;
+let hasCheckedLength = false;
+let canUpdateScore = false;
+let score = 0;
 
 class Hero {
   constructor(x, y) {
@@ -27,6 +31,13 @@ class Hero {
     } else if (canMoveBackward && this.x > 10) {
       this.x -= this.speed;
     }
+  }
+  fall() {
+    this.y += this.speed;
+  }
+  reset(){
+    this.x = 10;
+    this.y = 350;
   }
 }
 
@@ -122,30 +133,77 @@ function resetStick(stick, player) {
   stick.width = 5;
   stick.height = 0;
   stick.angle = 0;
-  if(player.x === 10){
+  if (player.x === 10) {
     canMoveBackward = false;
   }
 }
 
 function movePlatforms() {
   if (canMoveBackward) {
+    checkLength(player, platforms);
+
     platforms.forEach((platform) => platform.move());
   }
 }
 
+function checkLength() {
+  const buffer = 20;
+  let landed = false;
+  platforms.forEach((platform) => {
+    if (
+      player.x + buffer >= platform.x &&
+      player.x + player.width - buffer <= platform.x + platform.width
+    ) {
+      landed = true;
+    }
+  });
+  if (landed) {
+    updateScore();
+    canUpdateScore = false;
+  } else {
+    fail = true;
+  }
+  hasCheckedLength = true;
+}
+
+function updateScore() {
+  if (canUpdateScore) {
+    score++;
+  }
+}
+
+function resetGame() {
+  isMouseDown = false;
+  canMove = false;
+  canMoveBackward = false;
+  fail = false;
+  hasCheckedLength = false;
+  canUpdateScore = false;
+  score = 0;
+  player.reset();
+  stick.y = player.y + player.height;
+  platforms.length = 0;
+  p1.x = 10,
+  p2.x = 200;
+  platforms.push(p1, p2)
+  document.getElementById("pauseScreen").style.display = "none";
+
+}
+
+function showPauseScreen(){
+    document.getElementById("pauseScreen").style.display = "flex";
+    document.getElementById("score").innerHTML = "SCORE: " + score;
+}
+
 function gameLoop() {
-    console.log("player.x: "+player.x)
-    console.log("stick.x: "+stick.x)
-    console.log("stick.height: "+stick.height)
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  player.draw();
   player.move();
   stick.draw();
   movePlatforms();
+
   if (isMouseDown) {
     stick.grow();
   }
-
   if (!isMouseDown && stick.height < 0) {
     stick.rotate();
     if (stick.angle === Math.PI / 2) {
@@ -160,20 +218,28 @@ function gameLoop() {
   if (platforms[0].x + platforms[0].width < 0) {
     platforms.shift();
   }
+  let endOfStick = stick.height * -1 + stick.x;
 
-  if (player.x >= stick.height * -1 + stick.x - 15) {
+  if (player.x >= endOfStick - 15) {
+    checkLength();
     canMove = false;
     canMoveBackward = true;
     resetStick(stick, player);
-    
-  } 
-   if(player.x === 10 ){
+  }
+  if (player.x === 10) {
     canMoveBackward = false;
-   }
-   
+    hasCheckedLength = false;
+    canUpdateScore = true;
+  }
+
+  if (fail) {
+    player.fall();
+    showPauseScreen();
+  }
+  player.draw();
   requestAnimationFrame(gameLoop);
 }
- 
+
 heroImg.onload = () => {
   gameLoop();
 };
